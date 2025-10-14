@@ -1,5 +1,4 @@
-""" Find rank of employees by salary within each department """
-
+# PANDAS DATA
 import pandas as pd 
 
 data = {
@@ -13,11 +12,71 @@ data = {
 }
 
 df = pd.DataFrame(data)
-
 df['joining_date'] = pd.to_datetime(df['joining_date'])
 print(df)
 
+#====================================================================================
+# SQL
 
-df['ranks'] = df.groupby(['department'])['salary'].rank(method = 'dense', ascending = False)
+CREATE TABLE EMPLOYEE (
+    EMP_ID INT,
+    EMP_NAME VARCHAR(100),
+    DEPARTMENT VARCHAR(50),
+    SALARY INT,
+    JOINING_DATE DATE
+);
+
+INSERT INTO EMPLOYEE VALUES 
+(1, 'Rashi',  'IT',     5000,  '2025-01-12'),
+(2, 'Rakesh', 'Sales',  95000, '2024-09-23'),
+(3, 'Danial', 'IT',     85000, '2025-05-12'),
+(4, 'Hari',   'IT',     72000, '2025-07-19'),
+(5, 'Tommy',  'Sales',  65000, '2024-10-12'),
+(6, 'Saine',  'Tech',   27000, '2024-06-10'),
+(7, 'Som',    'Tech',   29500, '2024-11-28'),
+(8, 'Barbi',  'Tech',   95000, '2024-03-10');
+
+#-----------------------------------------------------------------------------------------------------------------------------
+
+""" Q1. Find rank of employees by salary within each department """
+
+df1 = df
+df1['ranks'] = df1.groupby(['department'])['salary'].rank(method = 'dense', ascending = False)
 # select *, dense_rank()over(partition by department order by salary desc) as salary_ranks
-print(df)
+print(df1)
+
+#-------------------------------------------------------------------------------------------------------------------------------
+
+""" Q2. Find top 2 paid employees per department """
+
+df2 = df 
+df2['salary_rank'] = df2.groupby('department').rank(method = 'dense', ascending = False)
+
+df2 = df2[df2['salary_rank'] <= 2]
+print(df2)
+
+#--------------------------------------------------------------------------------------------------------------------------------
+
+""" Q3. Calculate cumulative salary by department """
+# PANDAS SOLUTION
+
+df3 = df 
+
+df3 = df3.sort_values(by= ['department','joining_date'], ascending = [True, True])
+df3['cumsum'] = df3.groupby('department')['salary'].cumsum()
+print(df3)
+
+# MYSQL SOLUTION
+select 
+  emp_id,
+  department,
+  salary,
+  sum(salary)over(partition by department order by joining_date asc) as cumulative_salary
+from data ;
+
+#----------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+

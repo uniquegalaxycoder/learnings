@@ -76,6 +76,30 @@ from data ;
 
 #----------------------------------------------------------------------------------------------------------------------------------
 
+Q.Calculate moving average of salary (window = 3 employees)
+
+# PANDAS SOLUTION 
+
+df4 = df 
+df4 = df4.sort_values(by='joining_date', ascending= True)
+df4['avg_salary_moving'] = round(df4['salary'].rolling(window=3, min_periods = 1).mean(),1)
+print(df4)
+
+#sSQL SOLUTION 
+
+select 
+  *,
+  avg(salary)over(order by joining_date rows between 3 preceding and current row) as moving_avg
+from employee;
+
+#-------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
 
 
 

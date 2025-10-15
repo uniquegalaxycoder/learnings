@@ -85,7 +85,7 @@ df4 = df4.sort_values(by='joining_date', ascending= True)
 df4['avg_salary_moving'] = round(df4['salary'].rolling(window=3, min_periods = 1).mean(),1)
 print(df4)
 
-#sSQL SOLUTION 
+#SQL SOLUTION 
 
 select 
   *,
@@ -95,6 +95,24 @@ from employee;
 #-------------------------------------------------------------------------------------------------------------------------------------
 
 
+Q.Find the difference between each employee’s salary and the previous one in their department
+
+# PANDAS SOLUTION 
+
+df5 = df 
+df5 = df5.sort_values(by = ['department','joining_date'], ascending = [True, True])
+df5['prev_sal'] = df5.groupby('department')['salary'].shift(1)
+print(df5)
+
+
+# SQL SOLUTION
+SELECT
+  *
+  ,LAG(SALARY,1,0)OVER(PARTITION BY DEPARTMENT ORDER BY JOINING_DATE ASC) AS PREVIOUS_SALARY 
+FROM EMPLOYEE ;
+
+
+#---------------------------------------------------------------------------------------------------------------------------------------
 
 
 
